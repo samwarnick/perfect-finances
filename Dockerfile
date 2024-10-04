@@ -12,4 +12,4 @@ RUN mkdir -p ./db
 EXPOSE 3000/tcp
 ENTRYPOINT [ "bun", "run", "src/index.tsx" ]
 
-LABEL org.opencontainers.image.source https://github.com/samwarnick/qr-links
+LABEL org.opencontainers.image.source https://github.com/samwarnick/perfect-finances
