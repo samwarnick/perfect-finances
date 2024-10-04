@@ -12,6 +12,8 @@ import { and, eq, gte, lte } from 'drizzle-orm';
 import { z } from 'zod';
 import { DateTime } from 'luxon';
 import { calcStats } from './utils/stats';
+import { Form } from './components/form';
+import { Details } from './components/details';
 
 type Variables = {
 	username: string;
@@ -45,91 +47,12 @@ app.use(
 );
 
 app.get('/', async (c) => {
-	const budget = (await db.select().from(budgets))[0];
-	const today = DateTime.now().toFormat('yyyy-MM-dd hh:mm:ss');
-	const thirtyDaysAgo = DateTime.now()
-		.minus({ days: 30 })
-		.toFormat('yyyy-MM-dd hh:mm:ss');
-	const startOfMonth = DateTime.now()
-		.startOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
-	const endOfMonth = DateTime.now()
-		.endOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
-
-	const thisMonthsTransactions = await db
-		.select()
-		.from(transactions)
-		.where(
-			and(
-				gte(transactions.createdAt, startOfMonth),
-				lte(transactions.createdAt, endOfMonth),
-			),
-		);
-	const lastThirtyDaysTransactions = await db
-		.select()
-		.from(transactions)
-		.where(
-			and(
-				gte(transactions.createdAt, thirtyDaysAgo),
-				lte(transactions.createdAt, today),
-			),
-		);
-
-	const stats = calcStats(
-		budget,
-		thisMonthsTransactions,
-		lastThirtyDaysTransactions,
-	);
+	const stats = await calcStats();
 
 	return c.html(
 		<Layout>
-			<article id="details">
-				<div class="grid">
-					<div>
-						<strong>{formatAmount(stats.currentBalance)} Remaining</strong>
-					</div>
-					<div style="text-align: right">
-						<span>{formatAmount(stats.spentSoFar)} Spent</span>
-					</div>
-				</div>
-				<progress value={stats.percentRemaining} max="100" />
-				<details>
-					<ul>
-						<li>
-							Avg daily spend: {formatAmount(stats.avgDailySpend)}{' '}
-							<small>
-								({stats.avgDailySpend > 7525 ? 'Above' : 'Below'} target of
-								$75.25)
-							</small>
-						</li>
-						<li>
-							Last 30 days svg spend:{' '}
-							{formatAmount(stats.lastThirtyAvgDailySpend)}
-						</li>
-						<li>Projected balance: {formatAmount(stats.projectedBalance)}</li>
-						<li>
-							Could mean and extra {formatAmount(stats.projectedReward)} in fun
-							money and {formatAmount(stats.projectedSavings)} more saved!
-						</li>
-					</ul>
-				</details>
-			</article>
-
-			<form hx-post="/" hx-target="#details">
-				<label>
-					How much did you spend today?
-					<fieldset role="group">
-						<input
-							name="amount"
-							type="number"
-							placeholder="100.00"
-							step="any"
-						/>
-						<input type="submit" value="Submit" />
-					</fieldset>
-				</label>
-			</form>
+			<Details {...stats} />
+			<Form />
 			<a href="/manage">Manage Budget</a>
 		</Layout>,
 	);
@@ -149,7 +72,8 @@ app.post(
 				user: c.get('username'),
 			},
 		]);
-		return c.html(<span id="amountLeft">{formatAmount(budget.amount)}</span>);
+		const stats = await calcStats();
+		return c.html(<Details {...stats} />);
 	},
 );
 

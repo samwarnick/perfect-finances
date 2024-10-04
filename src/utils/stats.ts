@@ -1,11 +1,51 @@
 import { DateTime } from 'luxon';
-import { Budget, Transaction } from '../db/schema';
+import { Budget, budgets, Transaction, transactions } from '../db/schema';
+import { db } from '../db/db';
+import { and, gte, lte } from 'drizzle-orm';
 
-export function calcStats(
-	budget: Budget,
-	thisMonthsTransactions: Transaction[],
-	lastThirtyDaysTransactions: Transaction[],
-) {
+export type Stats = {
+	spentSoFar: number;
+	currentBalance: number;
+	percentRemaining: string;
+	avgDailySpend: number;
+	lastThirtyAvgDailySpend: number;
+	projectedBalance: number;
+	projectedReward: number;
+	projectedSavings: number;
+};
+
+export async function calcStats(): Promise<Stats> {
+	const budget = (await db.select().from(budgets))[0];
+	const today = DateTime.now().toFormat('yyyy-MM-dd hh:mm:ss');
+	const thirtyDaysAgo = DateTime.now()
+		.minus({ days: 30 })
+		.toFormat('yyyy-MM-dd hh:mm:ss');
+	const startOfMonth = DateTime.now()
+		.startOf('month')
+		.toFormat('yyyy-MM-dd hh:mm:ss');
+	const endOfMonth = DateTime.now()
+		.endOf('month')
+		.toFormat('yyyy-MM-dd hh:mm:ss');
+
+	const thisMonthsTransactions = await db
+		.select()
+		.from(transactions)
+		.where(
+			and(
+				gte(transactions.createdAt, startOfMonth),
+				lte(transactions.createdAt, endOfMonth),
+			),
+		);
+	const lastThirtyDaysTransactions = await db
+		.select()
+		.from(transactions)
+		.where(
+			and(
+				gte(transactions.createdAt, thirtyDaysAgo),
+				lte(transactions.createdAt, today),
+			),
+		);
+
 	const spentSoFar = getSpentSoFar(thisMonthsTransactions);
 	const currentBalance = budget.amount - spentSoFar;
 	const percentRemaining = (100 - (spentSoFar / currentBalance) * 100).toFixed(
