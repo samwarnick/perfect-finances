@@ -1,5 +1,6 @@
 declare module 'bun' {
 	interface Env {
-		NAME: string;
+		USERNAMES: string;
+		PASSWORD: string;
 	}
 }
