@@ -13,7 +13,19 @@ export const Layout: FC = (props) => {
 				<script src="/assets/alpinejs@3.14.1.min.js" />
 			</head>
 			<body>
-				<main class="container">{props.children}</main>
+				<main class="container">
+					<nav>
+						<ul>
+							<li>
+								<a href="/">Home</a>
+							</li>
+							<li>
+								<a href="/manage">Manage Budget</a>
+							</li>
+						</ul>
+					</nav>
+					{props.children}
+				</main>
 			</body>
 		</html>
 	);

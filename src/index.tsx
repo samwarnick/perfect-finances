@@ -14,6 +14,8 @@ import { DateTime } from 'luxon';
 import { calcStats } from './utils/stats';
 import { Form } from './components/form';
 import { Details } from './components/details';
+import { Transactions } from './components/transactions';
+import { getThisMonthsTransactions } from './utils/transactions';
 
 type Variables = {
 	username: string;
@@ -53,7 +55,6 @@ app.get('/', async (c) => {
 		<Layout>
 			<Details {...stats} />
 			<Form />
-			<a href="/manage">Manage Budget</a>
 		</Layout>,
 	);
 });
@@ -79,27 +80,16 @@ app.post(
 
 app.get('/manage', async (c) => {
 	const budget = (await db.select().from(budgets))[0];
-	const startOfMonth = DateTime.now()
-		.startOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
-	const endOfMonth = DateTime.now()
-		.endOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
-
-	const thisMonthsTransactions = await db
-		.select()
-		.from(transactions)
-		.where(
-			and(
-				gte(transactions.createdAt, startOfMonth),
-				lte(transactions.createdAt, endOfMonth),
-			),
-		);
+	const thisMonthsTransactions = await getThisMonthsTransactions();
 
 	return c.html(
 		<Layout>
 			<article>
-				<form action="">
+				<form
+					hx-patch="/manage/budget"
+					hx-target="#budgetAmount"
+					hx-swap="outerHTML"
+				>
 					<label>
 						Budget
 						<fieldset role="group">
@@ -108,23 +98,53 @@ app.get('/manage', async (c) => {
 								type="number"
 								placeholder="100.00"
 								step="any"
-								value={budget.amount}
+								id="budgetAmount"
+								value={(budget.amount / 100).toFixed(2)}
 							/>
 							<input type="submit" value="Update" />
 						</fieldset>
 					</label>
 				</form>
 			</article>
-			<article>
-				<ul>
-					{thisMonthsTransactions.map((t) => (
-						<li>{formatAmount(t.amount)}</li>
-					))}
-				</ul>
-			</article>
+			<Transactions transactions={thisMonthsTransactions} />
 		</Layout>,
 	);
 });
+
+app.patch(
+	'/manage/budget',
+	zValidator('form', z.object({ amount: z.coerce.number() })),
+	async (c) => {
+		const { amount } = c.req.valid('form');
+		const amountInCents = amount * 100;
+		const budget = (await db.select().from(budgets))[0];
+		await db
+			.update(budgets)
+			.set({ amount: amountInCents })
+			.where(eq(budgets.id, budget.id));
+		return c.html(
+			<input
+				name="amount"
+				type="number"
+				placeholder="100.00"
+				step="any"
+				id="budgetAmount"
+				value={(amountInCents / 100).toFixed(2)}
+			/>,
+		);
+	},
+);
+
+app.delete(
+	'/manage/transaction/:id',
+	zValidator('param', z.object({ id: z.coerce.number() })),
+	async (c) => {
+		const { id } = c.req.valid('param');
+		await db.delete(transactions).where(eq(transactions.id, id));
+		const thisMonthsTransactions = await getThisMonthsTransactions();
+		return c.html(<Transactions transactions={thisMonthsTransactions} />);
+	},
+);
 
 performMigration();
 

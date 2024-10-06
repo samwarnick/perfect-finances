@@ -48,7 +48,7 @@ export async function calcStats(): Promise<Stats> {
 
 	const spentSoFar = getSpentSoFar(thisMonthsTransactions);
 	const currentBalance = budget.amount - spentSoFar;
-	const percentRemaining = (100 - (spentSoFar / currentBalance) * 100).toFixed(
+	const percentRemaining = (100 - (spentSoFar / budget.amount) * 100).toFixed(
 		0,
 	);
 	const avgDailySpend = getAvgDailySpend(
