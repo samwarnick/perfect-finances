@@ -12,16 +12,18 @@ export const Transactions: FC<{ transactions: Transaction[] }> = ({
 					<tr>
 						<th>Date</th>
 						<th>Amount</th>
-						<th>Entered by</th>
-						<th>Actions</th>
+						<th>Notes</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
-					{transactions.map(({ id, user, amount, createdAt }) => (
+					{transactions.map(({ id, notes, user, amount, createdAt }) => (
 						<tr>
 							<td>{createdAt}</td>
 							<td>{formatAmount(amount)}</td>
-							<td>{user}</td>
+							<td>
+								{notes} ({user})
+							</td>
 							<td>
 								<button
 									hx-delete={`/manage/transaction/${id}`}

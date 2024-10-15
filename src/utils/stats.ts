@@ -8,6 +8,7 @@ export type Stats = {
 	currentBalance: number;
 	percentRemaining: string;
 	avgDailySpend: number;
+	dailyTarget: number;
 	lastThirtyAvgDailySpend: number;
 	projectedBalance: number;
 	projectedReward: number;
@@ -67,6 +68,7 @@ export async function calcStats(): Promise<Stats> {
 		currentBalance,
 		percentRemaining,
 		avgDailySpend,
+		dailyTarget: budget.dailyTarget,
 		lastThirtyAvgDailySpend,
 		projectedBalance,
 		projectedReward,

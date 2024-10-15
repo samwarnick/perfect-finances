@@ -7,10 +7,8 @@ import { Layout } from './layout';
 import { performMigration } from './db/migrate';
 import { basicAuth } from 'hono/basic-auth';
 import { budgets, transactions } from './db/schema';
-import { formatAmount } from './utils/format';
-import { and, eq, gte, lte } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { DateTime } from 'luxon';
 import { calcStats } from './utils/stats';
 import { Form } from './components/form';
 import { Details } from './components/details';
@@ -61,14 +59,18 @@ app.get('/', async (c) => {
 
 app.post(
 	'/',
-	zValidator('form', z.object({ amount: z.coerce.number() })),
+	zValidator(
+		'form',
+		z.object({ amount: z.coerce.number(), notes: z.string() }),
+	),
 	async (c) => {
 		const budget = (await db.select().from(budgets))[0];
-		const { amount } = c.req.valid('form');
+		const { amount, notes } = c.req.valid('form');
 		const amountInCents = amount * 100;
 		await db.insert(transactions).values([
 			{
 				amount: amountInCents,
+				notes,
 				budget: budget.id,
 				user: c.get('username'),
 			},
@@ -92,18 +94,27 @@ app.get('/manage', async (c) => {
 				>
 					<label>
 						Budget
-						<fieldset role="group">
-							<input
-								name="amount"
-								type="number"
-								placeholder="100.00"
-								step="any"
-								id="budgetAmount"
-								value={(budget.amount / 100).toFixed(2)}
-							/>
-							<input type="submit" value="Update" />
-						</fieldset>
+						<input
+							name="amount"
+							type="number"
+							placeholder="100.00"
+							step="any"
+							id="budgetAmount"
+							value={(budget.amount / 100).toFixed(2)}
+						/>
 					</label>
+					<label>
+						Daily Target
+						<input
+							name="dailyTarget"
+							type="number"
+							placeholder="100.00"
+							step="any"
+							id="dailyTarget"
+							value={(budget.dailyTarget / 100).toFixed(2)}
+						/>
+					</label>
+					<input type="submit" value="Update" />
 				</form>
 			</article>
 			<Transactions transactions={thisMonthsTransactions} />
@@ -113,14 +124,18 @@ app.get('/manage', async (c) => {
 
 app.patch(
 	'/manage/budget',
-	zValidator('form', z.object({ amount: z.coerce.number() })),
+	zValidator(
+		'form',
+		z.object({ amount: z.coerce.number(), dailyTarget: z.coerce.number() }),
+	),
 	async (c) => {
-		const { amount } = c.req.valid('form');
+		const { amount, dailyTarget } = c.req.valid('form');
 		const amountInCents = amount * 100;
+		const dailyTargetInCents = dailyTarget * 100;
 		const budget = (await db.select().from(budgets))[0];
 		await db
 			.update(budgets)
-			.set({ amount: amountInCents })
+			.set({ amount: amountInCents, dailyTarget: dailyTargetInCents })
 			.where(eq(budgets.id, budget.id));
 		return c.html(
 			<input

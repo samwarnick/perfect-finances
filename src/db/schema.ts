@@ -9,6 +9,7 @@ export const budgets = sqliteTable('budgets', {
 		.default(sql`(CURRENT_TIMESTAMP)`),
 	name: text('name').notNull(),
 	amount: integer('amount').notNull(),
+	dailyTarget: integer('daily_target').notNull().default(0),
 });
 
 export const transactions = sqliteTable('transactions', {
@@ -17,6 +18,7 @@ export const transactions = sqliteTable('transactions', {
 		.notNull()
 		.default(sql`(CURRENT_TIMESTAMP)`),
 	amount: integer('amount').default(0).notNull(),
+	notes: text('notes'),
 	user: text('user').notNull(),
 	budget: integer('budget_id')
 		.references(() => budgets.id)

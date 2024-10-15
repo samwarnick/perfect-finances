@@ -20,7 +20,7 @@ export const Details: FC<Stats> = (stats) => {
 						Avg. daily spend: {formatAmount(stats.avgDailySpend)}{' '}
 						<small>
 							({stats.avgDailySpend > 7525 ? 'Above' : 'Below'} target of
-							$75.25)
+							{formatAmount(stats.dailyTarget)})
 						</small>
 					</li>
 					<li>
