@@ -11,6 +11,7 @@ import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { calcStats } from './utils/stats';
 import { Form } from './components/form';
+import { BudgetForm } from './components/budget-form';
 import { Details } from './components/details';
 import { Transactions } from './components/transactions';
 import { getThisMonthsTransactions } from './utils/transactions';
@@ -87,35 +88,7 @@ app.get('/manage', async (c) => {
 	return c.html(
 		<Layout>
 			<article>
-				<form
-					hx-patch="/manage/budget"
-					hx-target="#budgetAmount"
-					hx-swap="outerHTML"
-				>
-					<label>
-						Budget
-						<input
-							name="amount"
-							type="number"
-							placeholder="100.00"
-							step="any"
-							id="budgetAmount"
-							value={(budget.amount / 100).toFixed(2)}
-						/>
-					</label>
-					<label>
-						Daily Target
-						<input
-							name="dailyTarget"
-							type="number"
-							placeholder="100.00"
-							step="any"
-							id="dailyTarget"
-							value={(budget.dailyTarget / 100).toFixed(2)}
-						/>
-					</label>
-					<input type="submit" value="Update" />
-				</form>
+				<BudgetForm {...budget} />
 			</article>
 			<Transactions transactions={thisMonthsTransactions} />
 		</Layout>,
@@ -133,20 +106,12 @@ app.patch(
 		const amountInCents = amount * 100;
 		const dailyTargetInCents = dailyTarget * 100;
 		const budget = (await db.select().from(budgets))[0];
-		await db
+		const updated = await db
 			.update(budgets)
 			.set({ amount: amountInCents, dailyTarget: dailyTargetInCents })
-			.where(eq(budgets.id, budget.id));
-		return c.html(
-			<input
-				name="amount"
-				type="number"
-				placeholder="100.00"
-				step="any"
-				id="budgetAmount"
-				value={(amountInCents / 100).toFixed(2)}
-			/>,
-		);
+			.where(eq(budgets.id, budget.id))
+			.returning();
+		return c.html(<BudgetForm {...updated[0]} />);
 	},
 );
 
