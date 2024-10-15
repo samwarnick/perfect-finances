@@ -6,7 +6,7 @@ export const Layout: FC = (props) => {
 			<head>
 				<meta charset="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-				<title>The Perfect Stack</title>
+				<title>Perfect Finances</title>
 				<link rel="stylesheet" href="/assets/picocss@2.0.6.min.css" />
 				<link rel="stylesheet" href="/assets/styles.css" />
 				<script src="/assets/htmx@2.0.2.min.js" />
