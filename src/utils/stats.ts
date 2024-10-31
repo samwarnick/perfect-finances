@@ -17,16 +17,16 @@ export type Stats = {
 
 export async function calcStats(): Promise<Stats> {
 	const budget = (await db.select().from(budgets))[0];
-	const today = DateTime.now().toFormat('yyyy-MM-dd hh:mm:ss');
+	const today = DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss');
 	const thirtyDaysAgo = DateTime.now()
 		.minus({ days: 30 })
-		.toFormat('yyyy-MM-dd hh:mm:ss');
+		.toFormat('yyyy-MM-dd HH:mm:ss');
 	const startOfMonth = DateTime.now()
 		.startOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
+		.toFormat('yyyy-MM-dd HH:mm:ss');
 	const endOfMonth = DateTime.now()
 		.endOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
+		.toFormat('yyyy-MM-dd HH:mm:ss');
 
 	const thisMonthsTransactions = await db
 		.select()
@@ -87,7 +87,7 @@ function groupTransactionsByDay(transactions: Transaction[]) {
 		(acc, curr) => {
 			const date = DateTime.fromFormat(
 				curr.createdAt,
-				'yyyy-MM-dd hh:mm:ss',
+				'yyyy-MM-dd HH:mm:ss',
 			).startOf('day');
 			const key = date.toISO()!;
 

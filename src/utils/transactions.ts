@@ -1,15 +1,15 @@
 import { DateTime } from 'luxon';
 import { db } from '../db/db';
 import { transactions } from '../db/schema';
-import { and, gte, lte } from 'drizzle-orm';
+import { and, desc, gte, lte } from 'drizzle-orm';
 
 export async function getThisMonthsTransactions() {
 	const startOfMonth = DateTime.now()
 		.startOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
+		.toFormat('yyyy-MM-dd HH:mm:ss');
 	const endOfMonth = DateTime.now()
 		.endOf('month')
-		.toFormat('yyyy-MM-dd hh:mm:ss');
+		.toFormat('yyyy-MM-dd HH:mm:ss');
 	const thisMonthsTransactions = await db
 		.select()
 		.from(transactions)
@@ -18,7 +18,7 @@ export async function getThisMonthsTransactions() {
 				gte(transactions.createdAt, startOfMonth),
 				lte(transactions.createdAt, endOfMonth),
 			),
-		);
+		).orderBy(desc(transactions.createdAt));
 
 	return thisMonthsTransactions;
 }
