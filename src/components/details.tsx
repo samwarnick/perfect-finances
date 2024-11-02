@@ -23,10 +23,12 @@ export const Details: FC<Stats> = (stats) => {
 							{formatAmount(stats.dailyTarget)})
 						</small>
 					</li>
-					<li>
-						Last 30 days avg. spend:{' '}
-						{formatAmount(stats.lastThirtyAvgDailySpend)}
-					</li>
+					{stats.lastThirtyAvgDailySpend && (
+						<li>
+							Last 30 days avg. spend:{' '}
+							{formatAmount(stats.lastThirtyAvgDailySpend)}
+						</li>
+					)}
 					<li>Projected balance: {formatAmount(stats.projectedBalance)}</li>
 					<li>
 						Could mean and extra {formatAmount(stats.projectedReward)} in fun

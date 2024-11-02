@@ -1,7 +1,10 @@
 import { DateTime } from 'luxon';
-import { Budget, budgets, Transaction, transactions } from '../db/schema';
+import { budgets, Transaction } from '../db/schema';
 import { db } from '../db/db';
-import { and, gte, lte } from 'drizzle-orm';
+import {
+	getLastThirtyDaysTransactions,
+	getThisMonthsTransactions,
+} from './transactions';
 
 export type Stats = {
 	spentSoFar: number;
@@ -9,7 +12,7 @@ export type Stats = {
 	percentRemaining: string;
 	avgDailySpend: number;
 	dailyTarget: number;
-	lastThirtyAvgDailySpend: number;
+	lastThirtyAvgDailySpend?: number;
 	projectedBalance: number;
 	projectedReward: number;
 	projectedSavings: number;
@@ -17,35 +20,9 @@ export type Stats = {
 
 export async function calcStats(): Promise<Stats> {
 	const budget = (await db.select().from(budgets))[0];
-	const today = DateTime.now().toFormat('yyyy-MM-dd HH:mm:ss');
-	const thirtyDaysAgo = DateTime.now()
-		.minus({ days: 30 })
-		.toFormat('yyyy-MM-dd HH:mm:ss');
-	const startOfMonth = DateTime.now()
-		.startOf('month')
-		.toFormat('yyyy-MM-dd HH:mm:ss');
-	const endOfMonth = DateTime.now()
-		.endOf('month')
-		.toFormat('yyyy-MM-dd HH:mm:ss');
 
-	const thisMonthsTransactions = await db
-		.select()
-		.from(transactions)
-		.where(
-			and(
-				gte(transactions.createdAt, startOfMonth),
-				lte(transactions.createdAt, endOfMonth),
-			),
-		);
-	const lastThirtyDaysTransactions = await db
-		.select()
-		.from(transactions)
-		.where(
-			and(
-				gte(transactions.createdAt, thirtyDaysAgo),
-				lte(transactions.createdAt, today),
-			),
-		);
+	const thisMonthsTransactions = await getThisMonthsTransactions();
+	const lastThirtyDaysTransactions = await getLastThirtyDaysTransactions();
 
 	const spentSoFar = getSpentSoFar(thisMonthsTransactions);
 	const currentBalance = budget.amount - spentSoFar;
@@ -70,6 +47,36 @@ export async function calcStats(): Promise<Stats> {
 		avgDailySpend,
 		dailyTarget: budget.dailyTarget,
 		lastThirtyAvgDailySpend,
+		projectedBalance,
+		projectedReward,
+		projectedSavings,
+	};
+}
+
+export async function calcStatsForTransactions(
+	transactions: Transaction[],
+): Promise<Stats> {
+	const budget = (await db.select().from(budgets))[0];
+
+	const spentSoFar = getSpentSoFar(transactions);
+	const currentBalance = budget.amount - spentSoFar;
+	const percentRemaining = (100 - (spentSoFar / budget.amount) * 100).toFixed(
+		0,
+	);
+	const firstDate = DateTime.fromFormat(transactions[0].createdAt, "yyyy-MM-dd HH:mm:ss");
+	const startOfMonth = firstDate.startOf("month");
+	const endOfMonth = firstDate.endOf("month");
+	const daysInMonth = startOfMonth.diff(endOfMonth, "days").days;
+	const avgDailySpend = getAvgDailySpend(transactions, daysInMonth);
+	const projectedBalance = currentBalance;
+	const projectedReward = projectedBalance * 0.2;
+	const projectedSavings = projectedBalance - projectedReward;
+	return {
+		spentSoFar,
+		currentBalance,
+		percentRemaining,
+		avgDailySpend,
+		dailyTarget: budget.dailyTarget,
 		projectedBalance,
 		projectedReward,
 		projectedSavings,

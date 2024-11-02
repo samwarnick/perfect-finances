@@ -20,7 +20,10 @@ export const Layout: FC = (props) => {
 								<a href="/">Home</a>
 							</li>
 							<li>
-								<a href="/manage">Manage Budget</a>
+								<a href="/manage">Manage</a>
+							</li>
+							<li>
+								<a href="/report">Last Month</a>
 							</li>
 						</ul>
 					</nav>

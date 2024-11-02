@@ -9,12 +9,12 @@ import { basicAuth } from 'hono/basic-auth';
 import { budgets, transactions } from './db/schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { calcStats } from './utils/stats';
+import { calcStats, calcStatsForTransactions } from './utils/stats';
 import { Form } from './components/form';
 import { BudgetForm } from './components/budget-form';
 import { Details } from './components/details';
 import { Transactions } from './components/transactions';
-import { getThisMonthsTransactions } from './utils/transactions';
+import { getLastMonthsTransactions, getThisMonthsTransactions } from './utils/transactions';
 
 type Variables = {
 	username: string;
@@ -125,6 +125,18 @@ app.delete(
 		return c.html(<Transactions transactions={thisMonthsTransactions} />);
 	},
 );
+
+app.get('/report', async (c) => {
+	const lastMonthsTransactions = await getLastMonthsTransactions();
+	const stats = await calcStatsForTransactions(lastMonthsTransactions);
+
+	return c.html(
+		<Layout>
+			<Details {...stats} />
+			<Transactions transactions={lastMonthsTransactions} />
+		</Layout>,
+	);
+});
 
 performMigration();
 
