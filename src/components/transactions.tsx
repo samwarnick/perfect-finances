@@ -19,7 +19,16 @@ export const Transactions: FC<{ transactions: Transaction[] }> = ({
 				<tbody>
 					{transactions.map(({ id, notes, user, amount, createdAt }) => (
 						<tr>
-							<td>{createdAt}</td>
+							<td>{new Date(createdAt + 'Z').toLocaleDateString('en-US', {
+								timeZone: 'America/New_York',
+								year: 'numeric',
+								month: 'numeric',
+								day: 'numeric',
+								hour: 'numeric',
+								minute: 'numeric',
+								second: 'numeric',
+								hour12: true
+							})}</td>
 							<td>{formatAmount(amount)}</td>
 							<td>
 								{notes} ({user})

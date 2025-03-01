@@ -5,10 +5,14 @@ import { and, desc, gte, lte } from 'drizzle-orm';
 
 export async function getThisMonthsTransactions() {
 	const startOfMonth = DateTime.now()
+		.setZone('America/New_York')
 		.startOf('month')
+		.toUTC()
 		.toFormat('yyyy-MM-dd HH:mm:ss');
 	const endOfMonth = DateTime.now()
+		.setZone('America/New_York')
 		.endOf('month')
+		.toUTC()
 		.toFormat('yyyy-MM-dd HH:mm:ss');
 
 	return getTransactions(startOfMonth, endOfMonth);
