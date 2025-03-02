@@ -59,4 +59,7 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+      - name: Trigger Watchtower
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" ${{ secrets.WATCHTOWER_URL }}
       
