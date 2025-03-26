@@ -15,6 +15,7 @@ import { BudgetForm } from './components/budget-form';
 import { Details } from './components/details';
 import { Transactions } from './components/transactions';
 import { getLastMonthsTransactions, getThisMonthsTransactions } from './utils/transactions';
+import v1 from './api/v1';
 
 type Variables = {
 	username: string;
@@ -137,6 +138,8 @@ app.get('/report', async (c) => {
 		</Layout>,
 	);
 });
+
+app.route("api/v1", v1);
 
 performMigration();
 
