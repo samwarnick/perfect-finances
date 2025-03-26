@@ -12,19 +12,19 @@
 		"docker:publish": "bun docker:build && bun docker:push"
 	},
 	"dependencies": {
-		"@hono/zod-validator": "0.2.2",
-		"drizzle-orm": "0.32.1",
-		"drizzle-zod": "0.5.1",
-		"hono": "4.5.3",
-		"luxon": "^3.5.0",
-		"zod": "3.23.8"
+		"@hono/zod-validator": "0.4.3",
+		"drizzle-orm": "0.41.0",
+		"drizzle-zod": "0.7.0",
+		"hono": "4.7.5",
+		"luxon": "^3.6.0",
+		"zod": "3.24.2"
 	},
 	"devDependencies": {
-		"@types/bun": "latest",
+		"@types/bun": "^1.2.6",
 		"@types/luxon": "^3.4.2",
-		"drizzle-kit": "0.23.0",
-		"prettier": "3.3.3",
+		"drizzle-kit": "0.30.5",
+		"prettier": "3.5.3",
 		"typed-htmx": "0.3.1",
-		"typescript": "5.5.4"
+		"typescript": "5.8.2"
 	}
 }
