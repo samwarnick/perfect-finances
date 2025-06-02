@@ -15,6 +15,7 @@ export const Details: FC<Stats> = (stats) => {
 			</div>
 			<progress value={stats.percentRemaining} max="100" />
 			<details>
+				<summary>Details</summary>
 				<ul>
 					<li>
 						Avg. daily spend: {formatAmount(stats.avgDailySpend)}{' '}
