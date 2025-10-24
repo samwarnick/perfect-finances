@@ -23,6 +23,8 @@ type Variables = {
 
 const app = new Hono<{ Variables: Variables }>();
 
+app.get('/health', (c) => c.json({ status: 'ok' }))
+
 app.use(logger());
 
 app.use(
