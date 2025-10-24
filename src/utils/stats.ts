@@ -21,6 +21,19 @@ export type Stats = {
 export async function calcStats(): Promise<Stats> {
 	const budget = (await db.select().from(budgets))[0];
 
+	if (!budget) {
+		return {
+			spentSoFar: 0,
+			currentBalance: 0,
+			percentRemaining: "0",
+			avgDailySpend: 0,
+			dailyTarget: 0,
+			projectedBalance: 0,
+			projectedReward: 0,
+			projectedSavings: 0,
+		}
+	}
+
 	const thisMonthsTransactions = await getThisMonthsTransactions();
 	const lastThirtyDaysTransactions = await getLastThirtyDaysTransactions();
 
