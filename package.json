@@ -2,6 +2,7 @@
 	"scripts": {
 		"dev": "bun run --hot src/index.tsx",
 		"prod": "bun db:migrate && bun run src/index.tsx",
+		"start": "bun db:migrate && bun run src/index.tsx",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "bun src/db/migrate.ts",
 		"db:seed": "bun src/db/seed.ts",
