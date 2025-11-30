@@ -31,7 +31,14 @@ app.get('/health', (c) => c.json({ status: 'ok' }))
 
 app.use(logger());
 app.use(authMiddleware);
-app.use(csrf());
+app.use('*', async (c, next) => {
+	if (c.req.path.startsWith('/api')) {
+		return next();
+	}
+	return csrf({
+		origin: [Bun.env.ORIGIN],
+	})(c, next);
+});
 
 app.use(
 	'/assets/*',
