@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { serveStatic } from 'hono/bun';
 import { logger } from 'hono/logger';
 import { authMiddleware } from './middleware/auth';
+import { csrf } from 'hono/csrf';
 import { db } from './db/db';
 import { Layout } from './layout';
 import { performMigration } from './db/migrate';
@@ -30,6 +31,7 @@ app.get('/health', (c) => c.json({ status: 'ok' }))
 
 app.use(logger());
 app.use(authMiddleware);
+app.use(csrf());
 
 app.use(
 	'/assets/*',
