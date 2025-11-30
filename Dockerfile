@@ -1,6 +1,6 @@
 FROM oven/bun:1.1.2-alpine AS base
 
-COPY bun.lockb .
+COPY bun.lock .
 COPY package.json .
 COPY tsconfig.json .
 
