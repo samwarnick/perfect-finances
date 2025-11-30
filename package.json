@@ -18,6 +18,7 @@
 		"drizzle-zod": "0.7.0",
 		"hono": "4.7.5",
 		"luxon": "^3.6.0",
+		"nanoid": "^5.1.6",
 		"zod": "3.24.2"
 	},
 	"devDependencies": {

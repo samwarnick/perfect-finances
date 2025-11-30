@@ -15,6 +15,13 @@
       "when": 1729033330854,
       "tag": "0001_strange_owl",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1764456737431,
+      "tag": "0002_confused_shiva",
+      "breakpoints": true
     }
   ]
 }

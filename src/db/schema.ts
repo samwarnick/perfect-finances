@@ -1,6 +1,5 @@
 import { sql, type InferSelectModel } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { createInsertSchema } from 'drizzle-zod';
 
 export const budgets = sqliteTable('budgets', {
 	id: integer('id').primaryKey(),
@@ -23,6 +22,12 @@ export const transactions = sqliteTable('transactions', {
 	budget: integer('budget_id')
 		.references(() => budgets.id)
 		.notNull(),
+});
+
+export const sessions = sqliteTable('sessions', {
+	id: text('id').primaryKey(),
+	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+	userId: text('user_id').notNull(),
 });
 
 export type Budget = InferSelectModel<typeof budgets>;

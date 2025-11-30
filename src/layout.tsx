@@ -10,6 +10,10 @@ export const Layout: FC = (props) => {
 				<link rel="stylesheet" href="/assets/picocss@2.0.6.min.css" />
 				<link rel="stylesheet" href="/assets/styles.css" />
 				<script src="/assets/htmx@2.0.2.min.js" />
+				<meta
+					name="htmx-config"
+					content='{"responseHandling": [{"code":"...", "swap": true}]}'
+				/>
 			</head>
 			<body>
 				<main class="container">
@@ -23,6 +27,15 @@ export const Layout: FC = (props) => {
 							</li>
 							<li>
 								<a href="/report">Last Month</a>
+							</li>
+						</ul>
+						<ul>
+							<li>
+								<form hx-post="/logout" hx-target="body">
+									<button type="submit" class="outline">
+										Logout
+									</button>
+								</form>
 							</li>
 						</ul>
 					</nav>

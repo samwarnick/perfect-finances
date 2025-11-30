@@ -2,6 +2,7 @@ import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { serveStatic } from 'hono/bun';
 import { logger } from 'hono/logger';
+import { authMiddleware } from './middleware/auth';
 import { db } from './db/db';
 import { Layout } from './layout';
 import { performMigration } from './db/migrate';
@@ -15,6 +16,7 @@ import { BudgetForm } from './components/budget-form';
 import { Details } from './components/details';
 import { Transactions } from './components/transactions';
 import { getLastMonthsTransactions, getThisMonthsTransactions } from './utils/transactions';
+import { auth } from './routes/auth';
 import v1 from './api/v1';
 
 type Variables = {
@@ -23,30 +25,17 @@ type Variables = {
 
 const app = new Hono<{ Variables: Variables }>();
 
+app.route('/', auth);
 app.get('/health', (c) => c.json({ status: 'ok' }))
 
 app.use(logger());
+app.use(authMiddleware);
 
 app.use(
 	'/assets/*',
 	serveStatic({
 		root: './',
 		rewriteRequestPath: (path) => path.replace(/^\/assets/, '/src/assets'),
-	}),
-);
-
-app.use(
-	'*',
-	basicAuth({
-		verifyUser: (username, password, c) => {
-			const usernames = Bun.env.USERNAMES.split(',');
-			const valid =
-				usernames.includes(username) && password === Bun.env.PASSWORD;
-			if (valid) {
-				c.set('username', username);
-			}
-			return valid;
-		},
 	}),
 );
 
