@@ -18,7 +18,7 @@ export const authMiddleware = createMiddleware(async (c, next) => {
 				},
 			})(c, next);
 		} else {
-			return next();
+			return c.json({ error: 'Unauthorized' }, 401);
 		}
 	}
 
