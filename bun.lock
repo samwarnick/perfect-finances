@@ -1,12 +1,13 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "dependencies": {
         "@hono/zod-validator": "0.4.3",
         "drizzle-orm": "0.41.0",
         "drizzle-zod": "0.7.0",
-        "hono": "4.7.5",
+        "hono": "^4.11.7",
         "luxon": "^3.6.0",
         "nanoid": "^5.1.6",
         "zod": "3.24.2",
@@ -108,7 +109,7 @@
 
     "get-tsconfig": ["get-tsconfig@4.7.3", "", { "dependencies": { "resolve-pkg-maps": "^1.0.0" } }, "sha512-ZvkrzoUA0PQZM6fy6+/Hce561s+faD1rsNwhnO5FelNjyy7EMGJ3Rz1AQ8GYDWjhRs/7dBLOEJvhK8MiEJOAFg=="],
 
-    "hono": ["hono@4.7.5", "", {}, "sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ=="],
+    "hono": ["hono@4.11.7", "", {}, "sha512-l7qMiNee7t82bH3SeyUCt9UF15EVmaBvsppY2zQtrbIhl/yzBTny+YUxsVjSjQ6gaqaeVtZmGocom8TzBlA4Yw=="],
 
     "isexe": ["isexe@3.1.1", "", {}, "sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ=="],
 
