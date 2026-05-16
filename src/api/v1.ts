@@ -5,7 +5,7 @@ import { db } from '../db/db';
 import { budgets, transactions } from '../db/schema';
 import { calcStats } from '../utils/stats';
 
-const app = new Hono<{ Variables: { username: string } }>();
+const app = new Hono();
 
 app.post(
 	'/transaction',

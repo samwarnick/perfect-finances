@@ -16,18 +16,17 @@ import { Form } from './components/form';
 import { BudgetForm } from './components/budget-form';
 import { Details } from './components/details';
 import { Transactions } from './components/transactions';
-import { getLastMonthsTransactions, getThisMonthsTransactions } from './utils/transactions';
+import {
+	getLastMonthsTransactions,
+	getThisMonthsTransactions,
+} from './utils/transactions';
 import { auth } from './routes/auth';
 import v1 from './api/v1';
 
-type Variables = {
-	username: string;
-};
-
-const app = new Hono<{ Variables: Variables }>();
+const app = new Hono();
 
 app.route('/', auth);
-app.get('/health', (c) => c.json({ status: 'ok' }))
+app.get('/health', (c) => c.json({ status: 'ok' }));
 
 app.use(logger());
 app.use(authMiddleware);
@@ -74,7 +73,6 @@ app.post(
 				amount: amountInCents,
 				notes,
 				budget: budget.id,
-				user: c.get('username'),
 			},
 		]);
 		const stats = await calcStats();
@@ -139,7 +137,7 @@ app.get('/report', async (c) => {
 	);
 });
 
-app.route("api/v1", v1);
+app.route('api/v1', v1);
 
 performMigration();
 
