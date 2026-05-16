@@ -18,7 +18,6 @@ export const transactions = sqliteTable('transactions', {
 		.default(sql`(CURRENT_TIMESTAMP)`),
 	amount: integer('amount').default(0).notNull(),
 	notes: text('notes'),
-	user: text('user').notNull(),
 	budget: integer('budget_id')
 		.references(() => budgets.id)
 		.notNull(),

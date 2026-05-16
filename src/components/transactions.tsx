@@ -17,22 +17,22 @@ export const Transactions: FC<{ transactions: Transaction[] }> = ({
 					</tr>
 				</thead>
 				<tbody>
-					{transactions.map(({ id, notes, user, amount, createdAt }) => (
+					{transactions.map(({ id, notes, amount, createdAt }) => (
 						<tr>
-							<td>{new Date(createdAt + 'Z').toLocaleDateString('en-US', {
-								timeZone: 'America/New_York',
-								year: 'numeric',
-								month: 'numeric',
-								day: 'numeric',
-								hour: 'numeric',
-								minute: 'numeric',
-								second: 'numeric',
-								hour12: true
-							})}</td>
-							<td>{formatAmount(amount)}</td>
 							<td>
-								{notes} ({user})
+								{new Date(createdAt + 'Z').toLocaleDateString('en-US', {
+									timeZone: 'America/New_York',
+									year: 'numeric',
+									month: 'numeric',
+									day: 'numeric',
+									hour: 'numeric',
+									minute: 'numeric',
+									second: 'numeric',
+									hour12: true,
+								})}
 							</td>
+							<td>{formatAmount(amount)}</td>
+							<td>{notes}</td>
 							<td>
 								<button
 									hx-delete={`/manage/transaction/${id}`}
