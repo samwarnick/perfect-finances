@@ -29,15 +29,6 @@ export const Layout: FC = (props) => {
 								<a href="/report">Last Month</a>
 							</li>
 						</ul>
-						<ul>
-							<li>
-								<form hx-post="/logout" hx-target="body">
-									<button type="submit" class="outline">
-										Logout
-									</button>
-								</form>
-							</li>
-						</ul>
 					</nav>
 					{props.children}
 				</main>

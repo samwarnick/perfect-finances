@@ -23,11 +23,5 @@ export const transactions = sqliteTable('transactions', {
 		.notNull(),
 });
 
-export const sessions = sqliteTable('sessions', {
-	id: text('id').primaryKey(),
-	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-	userId: text('user_id').notNull(),
-});
-
 export type Budget = InferSelectModel<typeof budgets>;
 export type Transaction = InferSelectModel<typeof transactions>;

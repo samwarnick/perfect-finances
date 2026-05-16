@@ -2,12 +2,10 @@ import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { serveStatic } from 'hono/bun';
 import { logger } from 'hono/logger';
-import { authMiddleware } from './middleware/auth';
 import { csrf } from 'hono/csrf';
 import { db } from './db/db';
 import { Layout } from './layout';
 import { performMigration } from './db/migrate';
-import { basicAuth } from 'hono/basic-auth';
 import { budgets, transactions } from './db/schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
@@ -20,16 +18,13 @@ import {
 	getLastMonthsTransactions,
 	getThisMonthsTransactions,
 } from './utils/transactions';
-import { auth } from './routes/auth';
 import v1 from './api/v1';
 
 const app = new Hono();
 
-app.route('/', auth);
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
 app.use(logger());
-app.use(authMiddleware);
 app.use('*', async (c, next) => {
 	if (c.req.path.startsWith('/api')) {
 		return next();
