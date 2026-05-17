@@ -3,7 +3,11 @@ import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { db } from '../db/db';
 import { budgets, transactions } from '../db/schema';
-import { calcStats } from '../utils/stats';
+import { calcStats, calcStatsForTransactions } from '../utils/stats';
+import {
+	getLastMonthsTransactions,
+	getThisMonthsTransactions,
+} from '../utils/transactions';
 
 const app = new Hono();
 
@@ -29,9 +33,21 @@ app.post(
 	},
 );
 
+app.get('/transactions', async (c) => {
+	const thisMonthsTransactions = await getThisMonthsTransactions();
+	return c.json(thisMonthsTransactions);
+});
+
 app.get('/stats', async (c) => {
 	const stats = await calcStats();
 	return c.json(stats);
+});
+
+app.get('/stats/all', async (c) => {
+	const currentMonth = await calcStats();
+	const lastMonthsTransactions = await getLastMonthsTransactions();
+	const lastMonth = await calcStatsForTransactions(lastMonthsTransactions);
+	return c.json({ currentMonth, lastMonth });
 });
 
 export default app;

@@ -25,13 +25,13 @@ export async function calcStats(): Promise<Stats> {
 		return {
 			spentSoFar: 0,
 			currentBalance: 0,
-			percentRemaining: "0",
+			percentRemaining: '0',
 			avgDailySpend: 0,
 			dailyTarget: 0,
 			projectedBalance: 0,
 			projectedReward: 0,
 			projectedSavings: 0,
-		}
+		};
 	}
 
 	const thisMonthsTransactions = await getThisMonthsTransactions();
@@ -76,10 +76,13 @@ export async function calcStatsForTransactions(
 	const percentRemaining = (100 - (spentSoFar / budget.amount) * 100).toFixed(
 		0,
 	);
-	const firstDate = DateTime.fromFormat(transactions[0].createdAt, "yyyy-MM-dd HH:mm:ss");
-	const startOfMonth = firstDate.startOf("month");
-	const endOfMonth = firstDate.endOf("month");
-	const daysInMonth = startOfMonth.diff(endOfMonth, "days").days;
+	const firstDate = DateTime.fromFormat(
+		transactions[0].createdAt,
+		'yyyy-MM-dd HH:mm:ss',
+	);
+	const startOfMonth = firstDate.startOf('month');
+	const endOfMonth = firstDate.endOf('month');
+	const daysInMonth = startOfMonth.diff(endOfMonth, 'days').days;
 	const avgDailySpend = getAvgDailySpend(transactions, daysInMonth);
 	const projectedBalance = currentBalance;
 	const projectedReward = projectedBalance * 0.2;

@@ -10,10 +10,12 @@
 		"db:clean": "drizzle-kit drop && rm sqlite.db",
 		"docker:build": "docker build --pull --platform linux/amd64 -t ghcr.io/samwarnick/perfect-finances .",
 		"docker:push": "docker push ghcr.io/samwarnick/perfect-finances:latest",
-		"docker:publish": "bun docker:build && bun docker:push"
+		"docker:publish": "bun docker:build && bun docker:push",
+		"tui:dev": "SHOW_CONSOLE=true bun run tui/index.ts"
 	},
 	"dependencies": {
 		"@hono/zod-validator": "0.4.3",
+		"@opentui/core": "^0.2.12",
 		"drizzle-orm": "0.45.2",
 		"drizzle-zod": "0.7.0",
 		"hono": "4.12.18",
