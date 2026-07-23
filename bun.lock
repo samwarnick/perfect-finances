@@ -8,7 +8,7 @@
         "@opentui/core": "^0.2.12",
         "drizzle-orm": "0.45.2",
         "drizzle-zod": "0.7.0",
-        "hono": "4.12.18",
+        "hono": "^4.12.31",
         "luxon": "^3.6.0",
         "nanoid": "^5.1.6",
         "zod": "3.24.2",
@@ -134,7 +134,7 @@
 
     "get-tsconfig": ["get-tsconfig@4.7.3", "", { "dependencies": { "resolve-pkg-maps": "^1.0.0" } }, "sha512-ZvkrzoUA0PQZM6fy6+/Hce561s+faD1rsNwhnO5FelNjyy7EMGJ3Rz1AQ8GYDWjhRs/7dBLOEJvhK8MiEJOAFg=="],
 
-    "hono": ["hono@4.12.18", "", {}, "sha512-RWzP96k/yv0PQfyXnWjs6zot20TqfpfsNXhOnev8d1InAxubW93L11/oNUc3tQqn2G0bSdAOBpX+2uDFHV7kdQ=="],
+    "hono": ["hono@4.12.31", "", {}, "sha512-zJIHFrl6bq3RDd2YusFNCDlM8qUprxKswyi/OPzPyzKDdyBXDqWx8bZlZ7R+saTdSTatUmb3O7K4SspGPaEOQg=="],
 
     "isexe": ["isexe@3.1.1", "", {}, "sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ=="],
 
