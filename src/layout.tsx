@@ -14,6 +14,7 @@ export const Layout: FC = (props) => {
 					name="htmx-config"
 					content='{"responseHandling": [{"code":"...", "swap": true}]}'
 				/>
+				<meta name="test" content="hello" />
 			</head>
 			<body>
 				<main class="container">
