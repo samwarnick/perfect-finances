@@ -1017,6 +1017,11 @@ button:focus-visible {
 		text-align: center;
 	}
 
+	/* the keyboard would otherwise pin the fixed nav over the form */
+	body:has(input:focus, textarea:focus, select:focus) .nav {
+		display: none;
+	}
+
 	main.wrap {
 		padding-bottom: 6rem;
 	}
