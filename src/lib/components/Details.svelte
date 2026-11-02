@@ -5,7 +5,7 @@
 
 	let {
 		stats,
-		label = 'Left to spend'
+		label = 'Remaining'
 	}: { stats: Stats; label?: string } = $props();
 
 	const percent = $derived(Number(stats.percentRemaining));
