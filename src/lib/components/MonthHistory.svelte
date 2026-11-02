@@ -9,6 +9,16 @@
 		Math.max(0, Math.min(100, 100 - Number(month.stats.percentRemaining)))
 	);
 	const overspent = $derived(month.stats.currentBalance < 0);
+	// the red cap grows with the overage, measured against the whole budget
+	const overPct = $derived.by(() => {
+		if (!overspent) return 0;
+		if (month.budget.amount <= 0) return 100;
+
+		return Math.min(
+			100,
+			(Math.abs(month.stats.currentBalance) / month.budget.amount) * 100
+		);
+	});
 	const count = $derived(month.transactions.length);
 	const panelId = $derived(`transactions-${month.month}`);
 
@@ -50,7 +60,7 @@
 	<div class="track" aria-hidden="true">
 		<span style="width: {used}%"></span>
 		{#if overspent}
-			<span class="track-over"></span>
+			<span class="track-over" style="width: {overPct}%"></span>
 		{/if}
 	</div>
 
