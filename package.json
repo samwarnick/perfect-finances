@@ -1,34 +1,44 @@
 {
+	"name": "perfect-finances",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
 	"scripts": {
-		"dev": "bun run --hot src/index.tsx",
-		"prod": "bun db:migrate && bun run src/index.tsx",
-		"start": "bun db:migrate && bun run src/index.tsx",
+		"dev": "bun --bun vite dev",
+		"build": "bun --bun vite build",
+		"start": "bun ./build",
+		"prod": "bun ./build",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "bun src/db/migrate.ts",
+		"db:migrate": "bun src/lib/server/db/migrate.ts",
 		"db:seed": "bun src/db/seed.ts",
 		"db:setup": "bun db:generate && bun db:migrate && bun db:seed",
-		"db:clean": "drizzle-kit drop && rm sqlite.db",
+		"db:clean": "drizzle-kit drop && rm -f db/sqlite.db",
 		"docker:build": "docker build --pull --platform linux/amd64 -t ghcr.io/samwarnick/perfect-finances .",
 		"docker:push": "docker push ghcr.io/samwarnick/perfect-finances:latest",
-		"docker:publish": "bun docker:build && bun docker:push",
-		"tui:dev": "SHOW_CONSOLE=true bun run tui/index.ts"
+		"docker:publish": "bun docker:build && bun docker:push"
 	},
 	"dependencies": {
-		"@hono/zod-validator": "0.4.3",
-		"@opentui/core": "^0.2.12",
-		"drizzle-orm": "0.45.2",
-		"drizzle-zod": "0.7.0",
-		"hono": "4.13.13",
-		"luxon": "^3.6.0",
-		"nanoid": "^5.1.6",
-		"zod": "3.24.2"
+		"drizzle-orm": "^0.45.4",
+		"luxon": "^3.7.2",
+		"open-props": "^1.7.23",
+		"zod": "^3.24.2"
 	},
 	"devDependencies": {
-		"@types/bun": "^1.2.6",
-		"@types/luxon": "^3.4.2",
-		"drizzle-kit": "0.30.5",
-		"prettier": "3.5.3",
-		"typed-htmx": "0.3.1",
-		"typescript": "5.8.2"
+		"@sveltejs/adapter-bun": "^1.0.0",
+		"@sveltejs/kit": "^3.1.1",
+		"@sveltejs/vite-plugin-svelte": "^7.3.1",
+		"@types/bun": "^1.4.4",
+		"@types/luxon": "^3.7.6",
+		"drizzle-kit": "^0.31.11",
+		"prettier": "^3.9.10",
+		"svelte": "^5.57.3",
+		"svelte-check": "^4.6.0",
+		"typescript": "^6.0.3",
+		"vite": "^8.3.5"
+	},
+	"imports": {
+		"#lib/*": "./src/lib/*"
 	}
 }

@@ -1,4 +1,9 @@
 node_modules
+
+# Output
+/.svelte-kit
+/build
+
 .env
 .env.local
 /db
