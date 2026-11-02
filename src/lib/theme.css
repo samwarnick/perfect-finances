@@ -13,6 +13,7 @@
 	--on-action: oklch(0.2511 0.006 258.36); /* yin-9 for contrast */
 	--danger: oklch(0.5441 0.214 19.06); /* red-6 */
 	--danger-bg: oklch(0.8898 0.052 3.28); /* red-1 */
+	--success: oklch(0.5209 0.144 149.47); /* green-7 */
 
 	/* text/chips that sit on the coloured balance card */
 	--tone-ink: oklch(0.2511 0.006 258.36);
@@ -44,6 +45,7 @@
 
 		--danger: oklch(0.7878 0.109 4.54); /* red-2 */
 		--danger-bg: oklch(0.32 0.08 20);
+		--success: oklch(0.7933 0.179 145.62); /* green-4 */
 
 		--tone-ink: oklch(0.2511 0.006 258.36);
 		--tone-chip: oklch(0.985 0.002 286);
@@ -245,6 +247,7 @@ main.wrap {
 }
 
 .track {
+	position: relative;
 	height: 14px;
 	margin-top: 1.1rem;
 	overflow: hidden;
@@ -260,6 +263,16 @@ main.wrap {
 	transition:
 		width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
 		background-color 0.3s ease;
+}
+
+/* a spent-out bar gets a red cap marking the month as over budget */
+.track span.track-over {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 22px;
+	background: var(--danger);
 }
 
 /* the coloured card keeps its own light-on-dark palette in both themes */
@@ -598,6 +611,14 @@ button:active {
 	background: var(--cream);
 	font-size: 0.72rem;
 	padding: 0.25rem 0.6rem;
+}
+
+.month-chips .chip.positive {
+	color: var(--success);
+}
+
+.month-chips .chip.negative {
+	color: var(--danger);
 }
 
 .month-card .track {

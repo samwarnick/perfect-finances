@@ -30,13 +30,28 @@
 		</div>
 		<ul class="chips month-chips">
 			<li class="chip">{formatAmount(month.stats.avgDailySpend)}/day</li>
-			<li class="chip">fun {formatAmount(month.stats.projectedReward)}</li>
-			<li class="chip">save {formatAmount(month.stats.projectedSavings)}</li>
+			<li
+				class="chip"
+				class:positive={month.stats.projectedReward >= 0}
+				class:negative={month.stats.projectedReward < 0}
+			>
+				fun {formatAmount(month.stats.projectedReward)}
+			</li>
+			<li
+				class="chip"
+				class:positive={month.stats.projectedSavings >= 0}
+				class:negative={month.stats.projectedSavings < 0}
+			>
+				save {formatAmount(month.stats.projectedSavings)}
+			</li>
 		</ul>
 	</header>
 
 	<div class="track" aria-hidden="true">
 		<span style="width: {used}%"></span>
+		{#if overspent}
+			<span class="track-over"></span>
+		{/if}
 	</div>
 
 	{#if count === 0}

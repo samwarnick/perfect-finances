@@ -1,4 +1,6 @@
 import { getHistory } from '#lib/server/history.js';
+import { getBudgetForMonth } from '#lib/server/budgets.js';
+import { currentMonth } from '#lib/server/months.js';
 import {
 	deleteTransactionAction,
 	updateAmountAction,
@@ -7,7 +9,15 @@ import {
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	return { months: await getHistory(6) };
+	const months = await getHistory(6);
+	const current = await getBudgetForMonth(currentMonth());
+	const fallbackTarget = months[0]?.budget.dailyTarget ?? 0;
+
+	return {
+		months,
+		target:
+			current && current.dailyTarget > 0 ? current.dailyTarget : fallbackTarget,
+	};
 };
 
 export const actions = {

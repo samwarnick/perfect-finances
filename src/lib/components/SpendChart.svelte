@@ -2,34 +2,56 @@
 	import { formatAmount } from '#lib/format.js';
 	import type { MonthHistory } from '#lib/server/history.js';
 
-	let { months }: { months: MonthHistory[] } = $props();
+	let {
+		months,
+		target
+	}: { months: MonthHistory[]; target: number } = $props();
 
 	const PLOT_HEIGHT = 140;
 
 	// history arrives newest first; charts read left to right
 	const series = $derived([...months].reverse());
-	const target = $derived(series[0]?.budget.dailyTarget ?? 0);
 	const peak = $derived(
 		Math.max(target, ...series.map((month) => month.stats.avgDailySpend), 1)
 	);
-	const scale = $derived(Math.max(peak * 1.06, target * 1.06, 1));
 
-	const ticks = $derived(
-		target > 0
-			? [target / 3, (target * 2) / 3, target].map((value) => ({
-					value,
-					top: PLOT_HEIGHT * (1 - value / scale),
-				}))
-			: [],
-	);
+	// three gridlines up to the target; keep stepping past it when a month overspends
+	const step = $derived(target / 3);
+	const scale = $derived.by(() => {
+		const headroom = Math.max(peak * 1.06, 1);
 
-	function tone(avg: number, dailyTarget: number) {
+		if (step <= 0 || peak <= target) return headroom;
+
+		// round up to the next gridline so the tallest bar sits below a labelled tick
+		return Math.ceil(headroom / step) * step;
+	});
+
+	const ticks = $derived.by(() => {
+		if (step <= 0) return [];
+
+		return Array.from({ length: Math.floor(scale / step + 1e-9) }, (_, i) => {
+			const value = (i + 1) * step;
+
+			return {
+				value,
+				top: PLOT_HEIGHT * (1 - value / scale),
+				isTarget: Math.abs(value - target) < 0.01,
+			};
+		});
+	});
+
+	function tone(month: MonthHistory) {
+		const { avgDailySpend, currentBalance } = month.stats;
+		const dailyTarget = month.budget.dailyTarget;
+
 		if (dailyTarget <= 0) return 'good';
 
-		const delta = avg - dailyTarget;
+		const delta = avgDailySpend - dailyTarget;
+
+		// over target but the month still finished with money left: warn, don't alarm
+		if (delta > 0) return currentBalance > 0 ? 'close' : 'over';
 
 		if (delta < -500) return 'good';
-		if (delta > 500) return 'over';
 
 		return 'close';
 	}
@@ -59,7 +81,7 @@
 		{#each ticks as tick}
 			<div
 				class="chart-tick"
-				class:is-target={tick.value === target}
+				class:is-target={tick.isTarget}
 				style="top: {tick.top}px"
 				aria-hidden="true"
 			>
@@ -72,7 +94,7 @@
 				<div class="chart-slot" style="height: {PLOT_HEIGHT}px" aria-hidden="true">
 					<span
 						class="chart-bar"
-						data-tone={tone(month.stats.avgDailySpend, month.budget.dailyTarget)}
+						data-tone={tone(month)}
 						style="height: {Math.max(
 							4,
 							(month.stats.avgDailySpend / scale) * PLOT_HEIGHT

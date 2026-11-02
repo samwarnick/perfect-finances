@@ -15,7 +15,7 @@
 		</p>
 	</section>
 {:else}
-	<SpendChart months={data.months} />
+	<SpendChart months={data.months} target={data.target} />
 
 	<div class="stack">
 		{#each data.months as month (month.month)}
