@@ -34,7 +34,7 @@
 
 <div class="recent">
 	<Transactions
-		transactions={data.recent}
+		transactions={data.transactions}
 		title="This month"
 		empty="No spending logged yet this month."
 	/>

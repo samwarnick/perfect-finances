@@ -28,7 +28,7 @@ export const load: PageServerLoad = async () => {
 
 	return {
 		stats,
-		recent: monthTransactions.slice(0, 4),
+		transactions: monthTransactions,
 	};
 };
 
